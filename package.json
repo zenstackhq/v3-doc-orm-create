@@ -8,13 +8,13 @@
   "devDependencies": {
     "@types/node": "^24.1.0",
     "@types/sql.js": "^1.4.9",
-    "@zenstackhq/cli": "next",
+    "@zenstackhq/cli": "^3.0.0-alpha.17",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@zenstackhq/runtime": "next",
-    "kysely-sql-js": "^0.0.2",
+    "@zenstackhq/kysely-sql-js": "^3.0.0-alpha.17",
+    "@zenstackhq/runtime": "^3.0.0-alpha.17",
     "sql.js": "^1.13.0"
   }
 }

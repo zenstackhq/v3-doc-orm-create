@@ -1,23 +1,18 @@
-import { ZenStackClient } from '@zenstackhq/runtime';
-import { SqlJsDialect } from 'kysely-sql-js';
-import initSqlJs from 'sql.js';
-import { schema } from './zenstack/schema';
 import { inspect } from 'node:util';
+import { createClient } from './db';
 
 async function main() {
-  // initialize sql.js engine
-  const SQL = await initSqlJs();
+  const db = await createClient();
 
-  // create database client with sql.js dialect
-  const db = new ZenStackClient(schema, {
-    dialect: new SqlJsDialect({ sqlJs: new SQL.Database() }),
-  });
+  const r = await db.$qb.insertInto('User')
+    .values([{
+      email: 'foo'
+    }, { email: 'bar'}]).execute();
+  console.log(r);
+  return;
 
-  // push schema to the database (`$pushSchema` is for testing only)
-  await db.$pushSchema();
-
-  // create a user with some postsØ
-  const user = await db.user.create({
+  // create a user with some posts
+  const user1 = await db.user.create({
     data: {
       email: 'u1@test.com',
       posts: {
@@ -35,10 +30,47 @@ async function main() {
         ],
       },
     },
+    // the `include` clause includes the relation in the
+    // create result
     include: { posts: true },
   });
 
-  console.log(inspect(user, { colors: true }));
+  // the created user together with the posts relation are returned
+  console.log('User', user1.email, 'is created with posts', inspect(user1.posts));
+
+  // you can also use the "select" clause to pick specific fields to return
+  const user2 = await db.user.create({
+    data: { email: 'u2@test.com' },
+    select: { id: true }
+  });
+  // only "id" field is available
+  console.log('New user created with id:', user2.id);
+
+  // instead of creating nested relations, you can also use
+  // the `connect` clause to connect to existing entities
+  const newPost = await db.post.create({ data: { title: 'Post3', content: '' }});
+  const user3 = await db.user.create({ 
+    data: {
+      email: 'u3@test.com',
+      posts: { connect: {id: newPost.id }}
+    },
+    include: { posts: true }
+  });
+  console.log(`User#${user3.id} is connected to posts:`, user3.posts.map(p => p.id));
+
+  // `createMany` allows you to batch create entities
+  const result = await db.user.createMany({
+    data: [{email: 'u4@test.com'}, {email: 'u5@test.com'}]
+  });
+  // only the number of entites created will be returned
+  console.log('Number of users created:', result.count);
+
+  // `createManyAndReturn` is similar except that it returns
+  // the created entities
+  const newUsers = await db.user.createManyAndReturn({
+    data: [{email: 'u6@test.com'}, {email: 'u7@test.com'}]
+  });
+  console.log('Some more users created:', inspect(newUsers));
 }
 
 main();
