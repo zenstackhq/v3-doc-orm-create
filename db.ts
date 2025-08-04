@@ -10,7 +10,6 @@ export async function createClient() {
   // create database client with sql.js dialect
   const db = new ZenStackClient(schema, {
     dialect: new SqlJsDialect({ sqlJs: new SQL.Database() }),
-    log: ['query']
   });
 
   // push schema to the database

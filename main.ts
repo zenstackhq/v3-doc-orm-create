@@ -4,13 +4,6 @@ import { createClient } from './db';
 async function main() {
   const db = await createClient();
 
-  const r = await db.$qb.insertInto('User')
-    .values([{
-      email: 'foo'
-    }, { email: 'bar'}]).execute();
-  console.log(r);
-  return;
-
   // create a user with some posts
   const user1 = await db.user.create({
     data: {
