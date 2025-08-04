@@ -53,7 +53,7 @@ async function main() {
 
   // `createMany` allows you to batch create entities
   const result = await db.user.createMany({
-    data: [{email: 'u4@test.com'}, {email: 'u5@test.com'}]
+    data: [{ email: 'u4@test.com' }, { email: 'u5@test.com' }]
   });
   // only the number of entites created will be returned
   console.log('Number of users created:', result.count);
@@ -61,7 +61,7 @@ async function main() {
   // `createManyAndReturn` is similar except that it returns
   // the created entities
   const newUsers = await db.user.createManyAndReturn({
-    data: [{email: 'u6@test.com'}, {email: 'u7@test.com'}]
+    data: [{ email: 'u6@test.com' }, { email: 'u7@test.com' }]
   });
   console.log('Some more users created:', inspect(newUsers));
 }
