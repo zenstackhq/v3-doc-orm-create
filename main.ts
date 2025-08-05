@@ -1,4 +1,3 @@
-import { inspect } from 'node:util';
 import { createClient } from './db';
 
 async function main() {
@@ -29,7 +28,7 @@ async function main() {
   });
 
   // the created user together with the posts relation are returned
-  console.log('User', user1.email, 'is created with posts', inspect(user1.posts));
+  console.log('User', user1.email, 'is created with posts', user1.posts);
 
   // you can also use the "select" clause to pick specific fields to return
   const user2 = await db.user.create({
@@ -63,7 +62,7 @@ async function main() {
   const newUsers = await db.user.createManyAndReturn({
     data: [{ email: 'u6@test.com' }, { email: 'u7@test.com' }]
   });
-  console.log('Some more users created:', inspect(newUsers));
+  console.log('Some more users created:', newUsers);
 }
 
 main();
