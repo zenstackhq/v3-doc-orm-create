@@ -63,6 +63,14 @@ async function main() {
     data: [{ email: 'u6@test.com' }, { email: 'u7@test.com' }]
   });
   console.log('Some more users created:', newUsers);
+
+  // use the `skipDuplicates` flag to ignore items that violate 
+  // unique constraints
+  const moreUsers = await db.user.createManyAndReturn({
+    data: [{ email: 'u7@test.com' }, { email: 'u8@test.com' }],
+    skipDuplicates: true
+  });
+  console.log('More users created:', moreUsers);
 }
 
 main();
